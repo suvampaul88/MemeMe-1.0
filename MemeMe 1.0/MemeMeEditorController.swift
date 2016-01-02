@@ -29,20 +29,6 @@ class MemeMeEditorController:  UIViewController, UIImagePickerControllerDelegate
     @IBOutlet weak var textfieldButtom: UITextField!
     
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // view color 
-        view.backgroundColor = UIColor.grayColor()
-        
-        //shareMeme button disabled 
-        shareMeme.enabled = false
-        
-        //textfield attributes
-        formatmemeText("TOP", textfield: textfieldTop)
-        formatmemeText("BUTTOM", textfield: textfieldButtom)
-        
-    }
-    
     //define attributes of texts in textfields
     let memeTextArrributes = [
         NSStrokeColorAttributeName : UIColor.blackColor(),
@@ -59,11 +45,27 @@ class MemeMeEditorController:  UIViewController, UIImagePickerControllerDelegate
     }
     
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        // view color 
+        view.backgroundColor = UIColor.grayColor()
+        
+        //shareMeme button disabled 
+        shareMeme.enabled = false
+        
+        //textfield attributes
+        formatmemeText("TOP", textfield: textfieldTop)
+        formatmemeText("BUTTOM", textfield: textfieldButtom)
+        
+    }
+    
+
+    
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
         //subscribe to notification
-        self.subscribeToKeyboardNotification()
+        subscribeToKeyboardNotification()
         
         //enable access to camera if available
         cameraButton.enabled = UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera)
@@ -73,7 +75,7 @@ class MemeMeEditorController:  UIViewController, UIImagePickerControllerDelegate
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         //unsunscribe from notification
-        self.unsubscribeFromKeyboardNotification()
+        unsubscribeFromKeyboardNotification()
     
     }
     
@@ -127,16 +129,18 @@ class MemeMeEditorController:  UIViewController, UIImagePickerControllerDelegate
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
         if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
             imageView.image = image
-            imageView.contentMode = UIViewContentMode.ScaleAspectFill
+            imageView.contentMode = UIViewContentMode.ScaleAspectFit
             dismissViewControllerAnimated(true, completion: nil)
             
             shareMeme.enabled = true
+            
         }
     }
     
     func imagePickerControllerDidCancel(picker: UIImagePickerController) {
         dismissViewControllerAnimated(true, completion: nil)
     }
+    
     
     
     //functions for textfield
@@ -203,8 +207,8 @@ class MemeMeEditorController:  UIViewController, UIImagePickerControllerDelegate
         navigationBar.hidden = true
         
         //render view to an image
-        UIGraphicsBeginImageContext(self.view.frame.size)
-        view.drawViewHierarchyInRect(self.view.frame, afterScreenUpdates: true)
+        UIGraphicsBeginImageContext(view.frame.size)
+        view.drawViewHierarchyInRect(view.frame, afterScreenUpdates: true)
         
         let memedImage: UIImage = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
